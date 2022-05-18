@@ -123,3 +123,36 @@ sudo ps -ef | grep (nginx|mysql|nfs)
     - 데이터베이스와 스토리지는 실제 환경에서는 DMZ대역의 통신을 허용하지 않음
 
 ---
+## Error case #1
+  - 최신 버전의 OS image 에서 정상적으로 동작이 되지 않으면 다음을 추가. 
+    - 최신 버전의 OS 대신 직전 버전으로 설정하여 동작하도록 함. 
+```script
+diff --git a/Vagrantfile b/Vagrantfile
+index 255b3cb..ff4a69d 100644
+--- a/Vagrantfile
++++ b/Vagrantfile
+@@ -2,6 +2,7 @@ Vagrant.configure("2") do |config|
+
+   # All server set
+   config.vm.box = "rockylinux/8"
++  config.vm.box_version = "4.0.0"
+   config.vm.box_check_update = true
+
+   # Create cent1
+```
+---
+## Error case #2
+  - ssh 가 접속되지 않음에 대한 해결
+    - vagrant ssh cent1 이후 cent1 에서 ssh cent2 로 cent2 로 접속되지 않는 현상
+    - ssh 설정이 일부 전달되지 않아 발생 가능한 현상으로 직접 들어가 설정 진행. 
+
+```script
+# cent1, 2, 3서버에 root로 접속해서 작업
+git clone https://github.com/yoons6548/VWS_vagrant_script.git
+cp -rfp VWS_vagrant_script/CONF/ssh/* /root/.ssh/
+chown root:root /root/.ssh -R
+chmod 600 /root/.ssh/id_rsa
+chmod 644 /root/.ssh/authorized_keys
+```
+
+---
